@@ -6,6 +6,7 @@ import './index.css';
 import Main from './Pages/Main'
 import Profile from './Pages/Profile'
 import AppBar from './Components/NavBar/AppBarr'
+import FullProduct from'./Pages/FullProduct'
 
 class MainApp extends Component{
   constructor(props) {
@@ -20,10 +21,12 @@ class MainApp extends Component{
     return(
       <div>
         <Router>
-            <div>
+            <div >
               <Route component={AppBar}/>
               <Route exact path="/" component={Main} />
               <Route exact path="/profile" component={Profile} />
+              <Route exact path="/fullproduct/:id" component={FullProduct} />
+
             </div>
           </Router>
       </div>

@@ -22,6 +22,7 @@ class CardItem extends Component {
     this.state = {
       imagesName: [],
       imagesURL: [],
+      namePrice: []
     }
     // this.attemptLogin = this.attemptLogin.bind(this);
     // this.attemptSignUp = this.attemptSignUp.bind(this);
@@ -36,14 +37,15 @@ class CardItem extends Component {
   getName = () => {
     console.log("start getName");
     let data = []
-    db.ref('images/').once('value', snapshot=> {
+    db.ref('products/').once('value', snapshot=> {
       snapshot.forEach((doc) => {
-        data.push(doc.key);
-        console.log("done here = " + doc.key);
+        data.push([doc.key, 0]); //the second one should be the price doc.child('price')
+
       })
     }).then( res => {
+      console.log("done here = " + data[0]);
       this.setState({
-        imagesName: data
+        namePrice: data
       })
       this.getImage()
       console.log("done getName");
@@ -52,25 +54,26 @@ class CardItem extends Component {
 
   getImage = () => {
     console.log("start getImage");
-    this.state.imagesName.forEach((name) => {
-      var im = storage.ref().child('mainpage').child(name + '.jpg')
+    this.state.namePrice.forEach((name) => {
+      var im = storage.ref().child('mainpage').child(name[0] + '.jpg')
       im.getDownloadURL().then((url) => {
         var newArray = this.state.imagesURL.slice();
-        newArray.push(url);
+        newArray.push([name[0], name[1], url]);
         this.setState({ imagesURL: newArray})
       })
     })
   }
 
-  showImage = () => {
-    console.log("yaysis");
-    console.log(this.state.imagesURL);
+  showEachImage = () => {
     return (
-        this.state.imagesURL.map((url) =>
+        this.state.imagesURL.map((name) =>
         <Card style={Cardstyles}>
-          <CardActionArea>
+          <CardActionArea onClick={()=>this.props.butto(name[0])}>
             <CardContent>
-              <img src={url} width="250" height="270" style={{margin: 5}}/>
+              <img src={name[2]} width="250" height="270" style={{margin: 5}}/>
+              {name[0]}
+              <br/>
+              {name[1]}
             </CardContent>
           </CardActionArea>
         </Card>
@@ -83,7 +86,7 @@ class CardItem extends Component {
         return (
           <div style={{margin: window.innerWidth*0.03}}>
             <Grid container spacing={24}>
-              {this.showImage()}
+              {this.showEachImage()}
               </Grid>
           </div>
         );

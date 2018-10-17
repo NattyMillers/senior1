@@ -27,12 +27,16 @@ const styles = theme => ({
 class Profile extends Component {
 
   state = {
-      selectedIndex: 0,
+      selectedIndex: this.props.location.state.page,
     };
 
     handleListItemClick = (event, index) => {
       this.setState({ selectedIndex: index });
     };
+
+    handleClick = (val) => {
+      this.props.history.push('/fullproduct/' + val)
+    }
 
     whichPage = () => {
       if(this.state.selectedIndex === 0){
@@ -45,7 +49,7 @@ class Profile extends Component {
       else if (this.state.selectedIndex === 1){
         return (
           <div>
-            <Wishlists/>
+            <Wishlists butto={this.handleClick}/>
           </div>
         )
       }

@@ -1,65 +1,109 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
 
-import CardItem from '../Components/MainPage/CardItems'
-import SortBy from '../Components/MainPage/SortBy'
+import logo from '../../LogoBlue.png'
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 300,
+    // borderStyle: 'solid',
+    // borderWidth: 5,
+    // borderColor: '#1c4587'
+  },
+  dense: {
+    marginTop: 16,
+  },
+  menu: {
+    width: 200,
+  },
+  root: {
+    '&$disabled': {
+      fontColor: 'white',
+    }
+  }
+});
 
 class Login extends Component {
   state = {
     open: false,
   };
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   render() {
+    const { classes } = this.props;
     return (
-      <div>
-        <Button onClick={this.handleClickOpen}>Slide in alert dialog</Button>
-        <Dialog
-          open={this.state.open}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"
-        >
-          <DialogTitle id="alert-dialog-slide-title">
-            {"Use Google's location service?"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
-              Let Google help apps determine location. This means sending anonymous location data to
-              Google, even when no apps are running.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={this.handleClose} color="primary">
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
+      <div style={{padding: 20, textAlign: 'center', backgroundColor: '#FFF3E0',}}>
+        <DialogTitle id="scroll-dialog-title" className={classes.root} style={{display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',}}>
+          <Avatar style={{
+            width: 190,
+            height: 180,
+            backgroundColor: '#ff5722',
+            borderStyle: 'solid',
+            borderWidth: 8,
+            borderColor: '#1c4587',}}>
+            <img src={logo} onClick={(e) => this.toMain(e)} width="170" />
+          </Avatar>
+          <br/>
+          <Typography variant="subheading" style={{color: '#1c4587', }} gutterBottom>
+          Sign in your account
+          </Typography>
+        </DialogTitle>
+        <DialogContent >
+          <TextField
+            variant="outlined"
+            label="Email"
+            type="email"
+            name="email"
+            className={classes.textField}
+            margin="normal"
+          />
+          <br/>
+          <TextField
+            id="outlined-password-input"
+            label="Password"
+            className={classes.textField}
+            type="password"
+            autoComplete="current-password"
+            margin="normal"
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions style={{display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',}}>
+          <Button style={{ color: 'white',
+                            fontSize: 18,
+                            backgroundColor:'#1c4587',
+                            width: 300,
+                            height: 60,
+                            marginLeft: 10}}>
+            LOGIN
+          </Button>
+          <Divider/>
+        </DialogActions>
       </div>
     );
   }
 }
 
-export default Login;
+Login.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Login);

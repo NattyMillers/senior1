@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 
 import CardItem from '../Components/MainPage/CardItems'
 import SortBy from '../Components/MainPage/SortBy'
 
 class Main extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  handleClick = (val) => {
+    this.props.history.push('/fullproduct/' + val)
+  }
 
     render() {
         return (
@@ -13,7 +20,7 @@ class Main extends Component {
               <Paper style={{margin: 20, padding: 20, boxShadow: 'none'}}>
                 <SortBy/>
               </Paper>
-              <CardItem/>
+              <CardItem butto={this.handleClick}/>
             </div>
         );
     }

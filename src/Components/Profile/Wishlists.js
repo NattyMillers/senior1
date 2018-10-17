@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
@@ -10,6 +9,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import Divider from '@material-ui/core/Divider';
 
 import Logo from '../../Logo.png'
+import { storage , db } from '../../firebase';
 
 const styles = theme => ({
   textfield: {
@@ -28,13 +28,66 @@ const Cardstyles = {
 
 class Wishlists extends Component {
 
-    state = {
-      name: '',
-      lastname: '',
-      email: '',
-      oldPass: '',
-      newPass: '',
-    };
+  constructor(props) {
+    super(props);
+    this.state = {
+      nameItems: [],
+      imagesURL: [],
+    }
+  }
+
+  componentDidMount() {
+    this.getName()
+  }
+
+  sets = (allState) => {
+    this.setState({ nameItems: allState })
+  }
+
+  getName = () => {
+    console.log("start getName");
+    let data = []
+    var uid = 'uid'
+    db.ref('users/' + uid + '/wishlists/').once('value').then(snapshot => {
+      var a = snapshot.numChildren();
+      snapshot.val().forEach((doc) =>{
+        data.push([doc.productID, doc.productName])
+      })
+    }).then( res => {
+      this.setState({ nameItems: data})
+      this.getImage()
+    })
+  }
+
+  getImage = () => {
+    console.log(this.state.nameItems);
+    this.state.nameItems.forEach((name) => {
+      console.log(name);
+      var im = storage.ref().child('mainpage').child(name[0] + '.jpg')
+      im.getDownloadURL().then((url) => {
+        var newArray = this.state.imagesURL.slice();
+        newArray.push([name[0], name[1], url]);
+        this.setState({ imagesURL: newArray})
+      })
+    })
+  }
+
+  showEachImage = () => {
+    console.log(this.state.imagesURL);
+    return (
+        this.state.imagesURL.map((name) =>
+          <Card style={{margin: 10}}>
+            <CardActionArea onClick={()=>this.props.butto(name[0])}>
+              <CardContent>
+                <img src={name[2]} width="200" height="220" style={{margin: 5}}/>
+                <br/>
+                {name[1]}
+              </CardContent>
+            </CardActionArea>
+          </Card>
+      )
+    )
+  }
 
     render() {
         return (
@@ -48,13 +101,9 @@ class Wishlists extends Component {
                   </Grid>
                 </Grid>
                 <Divider/>
-                <Card style={Cardstyles}>
-                  <CardActionArea>
-                    <CardContent>
-                      <img src={Logo} width="250" height="270" style={{margin: 5}}/>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
+                <Grid container direction="row" justify="space-evenly" alignItems="stretch">
+                  {this.showEachImage()}
+                </Grid>
               </Paper>
             </div>
         );
