@@ -39,7 +39,7 @@ function getSuggestionsList() {
   let data = []
   db.ref('products/').once('value', snapshot=> {
     snapshot.forEach((doc) => {
-      data.push(doc.key);
+      data.push(doc.key); //change to doc.val().name
     })
   }).then( res => {
     return data

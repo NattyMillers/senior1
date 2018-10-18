@@ -67,6 +67,11 @@ class AppBarr extends Component{
     })
   }
 
+  toAdmin = event => {
+    this.setState({ open2: false });
+    this.props.history.push('/admin')
+  }
+
   toMain = (e) => {
     e.preventDefault();
     console.log(this.props);
@@ -101,7 +106,7 @@ class AppBarr extends Component{
     const { open2 } = this.state;
     return(
       <div>
-      <AppBar position="static" style={{backgroundColor:"#ff5722",}} >
+      <AppBar position="static" style={{backgroundColor:"white"}} >
         <Toolbar >
           <Grid container direction="row" justify="space-between" alignItems="center">
               <Typography variant="title" color="inherit">
@@ -147,6 +152,7 @@ class AppBarr extends Component{
                         <MenuItem onClick={() => this.toWishlists()}>Wishlists</MenuItem>
                         <MenuItem onClick={() => this.toNotification()}>Notifications</MenuItem>
                         <MenuItem onClick={() => this.toQueue()}>Queue</MenuItem>
+                        <MenuItem onClick={() => this.toAdmin()}>Admin</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>

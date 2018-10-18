@@ -7,12 +7,11 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import { storage , db } from '../../firebase';
 
 const Cardstyles = {
-    width: window.innerWidth/4.6,
-    height: 400,
+    width: window.innerWidth/5,
+    height: 300,
     display: 'flex',
-    margin: window.innerWidth*0.03,
+    marginBottom: window.innerWidth*0.02,
     borderRadius: 0,
-    boxShadow: 'none',
   };
 
 class CardItem extends Component {
@@ -39,11 +38,10 @@ class CardItem extends Component {
     let data = []
     db.ref('products/').once('value', snapshot=> {
       snapshot.forEach((doc) => {
-        data.push([doc.key, 0]); //the second one should be the price doc.child('price')
+        data.push([doc.key, 0, doc.val().name]); //the second one should be the price doc.child('price')
 
       })
     }).then( res => {
-      console.log("done here = " + data[0]);
       this.setState({
         namePrice: data
       })
@@ -58,7 +56,7 @@ class CardItem extends Component {
       var im = storage.ref().child('mainpage').child(name[0] + '.jpg')
       im.getDownloadURL().then((url) => {
         var newArray = this.state.imagesURL.slice();
-        newArray.push([name[0], name[1], url]);
+        newArray.push([name[0], name[1], name[2], url]);
         this.setState({ imagesURL: newArray})
       })
     })
@@ -70,8 +68,8 @@ class CardItem extends Component {
         <Card style={Cardstyles}>
           <CardActionArea onClick={()=>this.props.butto(name[0])}>
             <CardContent>
-              <img src={name[2]} width="250" height="270" style={{margin: 5}}/>
-              {name[0]}
+              <img src={name[3]} resizeMode="contain" style={{width: window.innerWidth/6}}/>
+              {name[2]}
               <br/>
               {name[1]}
             </CardContent>
@@ -85,7 +83,7 @@ class CardItem extends Component {
     render() {
         return (
           <div style={{margin: window.innerWidth*0.03}}>
-            <Grid container spacing={24}>
+            <Grid container direction="row" justify="space-between" alignItems="center">
               {this.showEachImage()}
               </Grid>
           </div>

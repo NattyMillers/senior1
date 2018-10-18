@@ -16,8 +16,8 @@ class Main extends Component {
 
     render() {
         return (
-            <div style={{textAlign: "center"}}>
-              <Paper style={{margin: 20, padding: 20, boxShadow: 'none'}}>
+            <div style={{textAlign: "center", backgroundColor: '#EEEEEE'}}>
+              <Paper style={{ padding: 20, boxShadow: 'none', backgroundColor: '#EEEEEE'}}>
                 <SortBy/>
               </Paper>
               <CardItem butto={this.handleClick}/>

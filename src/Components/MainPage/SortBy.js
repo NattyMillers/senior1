@@ -6,8 +6,8 @@ class SortBy extends Component {
 
     render() {
         return (
-            <div style={{textAlign: "center"}}>
-              <Paper style={{margin: 20, padding: 20, boxShadow: 'none'}}>
+            <div style={{textAlign: "center", backgroundColor: '#EEEEEE'}}>
+              <Paper style={{margin: 20, padding: 20, }}>
                 <Button variant="outlined" style={{marginRight: 20}}>
                   Popular
                 </Button>
@@ -19,12 +19,6 @@ class SortBy extends Component {
                 </Button>
                 <Button variant="outlined" style={{marginRight: 20}}>
                   High to Low
-                </Button>
-                <Button variant="outlined" style={{marginRight: 20}}>
-                  More to Less
-                </Button>
-                <Button variant="outlined" style={{marginRight: 20}}>
-                  Less to More
                 </Button>
               </Paper>
             </div>

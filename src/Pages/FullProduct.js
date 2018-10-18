@@ -38,7 +38,7 @@ class FullProduct extends Component {
       cap: '',
       addDate: '',
       picURL: '',
-      like: false,
+      like: true,
     };
   }
 
@@ -46,6 +46,7 @@ class FullProduct extends Component {
     console.log(" in FullProduct");
     this.getData()
     this.getURL()
+    
   }
 
   getData = () => {
@@ -69,30 +70,48 @@ class FullProduct extends Component {
     })
   }
 
-//can't use numchildren 
+//can't use numchildren
   addWish = (proId, proName) => { //check if it's already liked then unlike and remove from database
-    // console.log(proName);
-    if (!this.state.like){
-      this.setState({like: true})
       var uid = 'uid'
+      let data = ''
       db.ref('users/' + uid + '/wishlists/').once('value').then(function(snapshot) {
-        var a = snapshot.numChildren();
-        db.ref('users/' + uid + '/wishlists/' + a).set({
-          productID: proId,
-          productName: proName
+        if (snapshot.hasChild(proId)){
+          data = false;
+          // this.setState({like : false})
+          db.ref('users/' + uid + '/wishlists/').child(proId).remove();
+        }else{
+          data = true;
+          // this.setState({like : true})
+          db.ref('users/' + uid + '/wishlists/' + proId).set({name: proName})
+        }
+      }).then( (res) => {
+        this.setState({
+          like: data
         })
       })
-    }else{
-      // db.ref('users/' + uid + '/wishlists/').child(note.id).remove();
-      this.setState({like: false})
-    }
+  }
+
+  likedButt = () => {
+    return (
+      <Button variant="outlined" color="secondary" component="span" style={{borderRadius: 15}} onClick={() => this.addWish(this.props.match.params.id, this.state.name)}>
+        <FavIcon style={{marginRight: 10}}/> Add to Wishlists
+      </Button>
+    )
+  }
+
+  unlikedButt = () => {
+    return (
+      <Button variant="contained" color="secondary" component="span" style={{borderRadius: 15}} onClick={() => this.addWish(this.props.match.params.id, this.state.name)}>
+        <FavIcon style={{marginRight: 10}}/> Remove from Wishlists
+      </Button>
+    )
   }
 
   render () {
     // console.log(this.props.match.params.id);
-    console.log(this.state.name);
+    // console.log(this.state.name);
     return (
-      <div>
+      <div style={{backgroundColor: '#EEEEEE', sizeBackground: '100bh'}}>
         <Grid container direction="row" justify="space-evenly" alignItems="center">
             <Card style={CardLeft}>
               <img src={this.state.picURL} width="400" height="450" style={{marginRight: 'auto', marginLeft: 'auto', marginTop: 30, display: 'block'}}/>
@@ -121,9 +140,7 @@ class FullProduct extends Component {
                   <Divider style={{width: window.innerWidth/2.5}}/>
                   <br/>
                   <br/>
-                  <Button variant="outlined" color="secondary" component="span" style={{borderRadius: 15}} onClick={() => this.addWish(this.props.match.params.id, this.state.name)}>
-                    <FavIcon style={{marginRight: 10}}/> Add to Wishlists
-                  </Button>
+                  {this.state.like? this.likedButt() : this.unlikedButt() }
                   <Button variant="outlined" size="large" color="primary" style={{borderRadius: 15}}>
                     <CartIcon style={{marginRight: 10}}/> Add to Queue
                   </Button>
