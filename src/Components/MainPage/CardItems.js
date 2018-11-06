@@ -8,11 +8,16 @@ import { storage , db } from '../../firebase';
 
 const Cardstyles = {
     width: window.innerWidth/5,
-    height: 300,
+    height: 350,
     display: 'flex',
     marginBottom: window.innerWidth*0.02,
     borderRadius: 0,
   };
+
+const Imagestyles = {
+  objectFit: 'contain',
+  width: window.innerWidth/6,
+}
 
 class CardItem extends Component {
 
@@ -38,7 +43,7 @@ class CardItem extends Component {
     let data = []
     db.ref('products/').once('value', snapshot=> {
       snapshot.forEach((doc) => {
-        data.push([doc.key, 0, doc.val().name]); //the second one should be the price doc.child('price')
+        data.push([doc.key, doc.val().price, doc.val().name]); //the second one should be the price doc.child('price')
 
       })
     }).then( res => {
@@ -68,8 +73,8 @@ class CardItem extends Component {
         <Card style={Cardstyles}>
           <CardActionArea onClick={()=>this.props.butto(name[0])}>
             <CardContent>
-              <img src={name[3]} resizeMode="contain" style={{width: window.innerWidth/6}}/>
-              {name[2]}
+              <img src={name[3]} resizeMode="contain" style={Imagestyles}/>
+              {name[2].replace(/_/g, " ")}
               <br/>
               {name[1]}
             </CardContent>

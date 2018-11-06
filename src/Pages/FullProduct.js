@@ -11,19 +11,26 @@ import FavIcon from '@material-ui/icons/Favorite';
 import Divider from '@material-ui/core/Divider';
 import CartIcon from '@material-ui/icons/ShoppingCart';
 
-import { storage , db } from '../firebase';
+import Carousel from 'nuka-carousel';
+
+import { auth, storage , db } from '../firebase';
+
+const Imagestyles = {
+  objectFit: 'contain',
+}
 
 const CardLeft = {
     width: window.innerWidth/2.3,
     height: 530,
     marginTop: 50,
+    paddingLeft: 50,
+    paddingRight: 50,
     // marginLeft: 50,
   };
 
 const CardRight = {
     width: window.innerWidth/2.3,
     height: 530,
-    marginTop: 50,
     // marginRight: 50,
   };
 
@@ -39,14 +46,54 @@ class FullProduct extends Component {
       addDate: '',
       picURL: '',
       like: true,
+      picNames: [],
+      imagesURL: [],
+      num: '',
+      detail: '',
+      queue: false,
+      capCheck: '',
+      takenCheck: '',
+      usersId: [],
     };
+  }
+
+  componentWillMount() {
+    var uid = auth.currentUser.uid
+    let data = ''
+    let data2 = ''
+    var proId = this.props.match.params.id
+    db.ref('users/' + uid + '/wishlists/').once('value').then(function(snapshot) {
+      if (snapshot.hasChild(proId)){
+        console.log('had liked');
+        data = false;
+      }else{
+        console.log('not like');
+        data = true;
+      }
+    }).then( (res) => {
+      this.setState({
+        like: data
+      })
+    })
+    db.ref('users/' + uid + '/queue/').once('value').then(function(snapshot) {
+      if (snapshot.hasChild(proId)){
+        console.log('had queued');
+        data2 = true;
+      }else{
+        console.log('not queue');
+        data2 = false;
+      }
+    }).then( (res) => {
+      this.setState({
+        queue: data2
+      })
+    })
   }
 
   componentDidMount() {
     console.log(" in FullProduct");
     this.getData()
     this.getURL()
-    
   }
 
   getData = () => {
@@ -58,8 +105,12 @@ class FullProduct extends Component {
         name: snapshot.child('name').val(),
         price: snapshot.child('price').val(),
         taken: snapshot.child('taken').val(),
+        num: snapshot.child('numPic').val(),
+        detail: snapshot.child('detail').val(),
       })
       // console.log(snapshot.val());
+    }).then( res => {
+      this.getURL2()
     })
   }
 
@@ -70,25 +121,128 @@ class FullProduct extends Component {
     })
   }
 
-//can't use numchildren
-  addWish = (proId, proName) => { //check if it's already liked then unlike and remove from database
-      var uid = 'uid'
-      let data = ''
-      db.ref('users/' + uid + '/wishlists/').once('value').then(function(snapshot) {
-        if (snapshot.hasChild(proId)){
-          data = false;
-          // this.setState({like : false})
-          db.ref('users/' + uid + '/wishlists/').child(proId).remove();
-        }else{
-          data = true;
-          // this.setState({like : true})
-          db.ref('users/' + uid + '/wishlists/' + proId).set({name: proName})
-        }
-      }).then( (res) => {
-        this.setState({
-          like: data
-        })
+  getURL2 = () => {
+    console.log(this.state.num);
+    for (var i=1; i< this.state.num+1; i++){
+      var im = storage.ref().child(this.props.match.params.id).child(this.state.name + i)
+      im.getDownloadURL().then((url) => {
+        var newArray = this.state.imagesURL.slice();
+        newArray.push(url);
+        this.setState({ imagesURL: newArray})
       })
+    }
+  }
+
+  addWish = (proId, proName) => { //check if it's already liked then unlike and remove from database
+      let data = ''
+      console.log(auth.currentUser !== null);
+      if (auth.currentUser !== null){
+        const uid = auth.currentUser.uid
+        db.ref('users/' + uid + '/wishlists/').once('value').then(function(snapshot) {
+          if (snapshot.hasChild(proId)){
+            data = true;
+            console.log('remove like');
+            // this.setState({like : false})
+            db.ref('users/' + uid + '/wishlists/').child(proId).remove();
+          }else{
+            data = false;
+            console.log('add like');
+            // this.setState({like : true})
+            db.ref('users/' + uid + '/wishlists/' + proId).set({name: proName})
+          }
+        }).then( (res) => {
+          this.setState({
+            like: data
+          })
+        })
+      }
+      else{
+        alert("Please Login")
+      }
+  }
+
+  addQueue = (proId, proName) => { //check if it's already queued then unqueue and remove from database
+      let dataQ = ''
+      console.log(auth.currentUser !== null);
+      if (auth.currentUser !== null){
+        const uid = auth.currentUser.uid
+        var postData = {
+          name : this.state.name,
+        }
+        //add to users queue
+        let ref = db.ref(`users/${uid}/queue/${proId}/`)
+        ref.set(postData)
+        //increase the number of queue in product
+        var postData2 = { taken: this.state.taken + 1}
+        let ref2 = db.ref(`products/${proId}`)
+        ref2.update(postData2)
+        //add uid to products
+        var postData3 = { [this.state.taken]: uid}
+        let ref3 = db.ref(`products/${proId}/usersId/`)
+        ref3.update(postData3)
+        this.setState({ queue: true})
+        this.checkEqual()
+        console.log("1");
+      }
+      else{
+        alert("Please Login")
+      }
+  }
+
+  checkEqual = () => {
+    db.ref('products/'+this.props.match.params.id).once('value', snapshot => {
+      this.setState({
+        capCheck: snapshot.child('cap').val(),
+        takenCheck: snapshot.child('taken').val(),
+      })
+    }).then( (res) => {
+      console.log("2");
+      if (this.state.capCheck == this.state.takenCheck){
+        this.sendNoti()
+      }
+    })
+  }
+
+  sendNoti = () => {
+    console.log("3");
+    db.ref('products/'+this.props.match.params.id).once('value', snapshot => {
+      this.setState({
+        usersId : snapshot.child('usersId').val(),
+      })
+    }).then((res) => {
+      this.state.usersId.forEach((usr) => {
+        var sendNot = { header: "Your item is ready.",
+                        context: "Your item is ready to be shipped. Please make a payment within 3 days or else the product will be automatically cancel by the end of midnight on the third day."}
+        let refNot = db.ref(`users/${usr}/notifications/${this.props.match.params.id}`)
+        refNot.update(sendNot)
+      })
+      console.log(this.state.usersId);
+    })
+  }
+
+  removeQueue = (proId, proName) => {
+    const uid = auth.currentUser.uid
+    db.ref('users/' + uid + '/queue/').child(proId).remove();
+    var updateThis = { taken: this.state.taken - 1}
+    let ref2 = db.ref(`products/${proId}/`)
+    ref2.update(updateThis)
+    this.setState({ queue: false})
+  }
+
+  queueButt = () => {
+    return (
+      <Button onClick={() => this.addQueue(this.props.match.params.id, this.state.name)} variant="outlined" size="large" color="primary" style={{borderRadius: 15}}>
+        <CartIcon style={{marginRight: 10}}/> Add to Queue
+      </Button>
+    )
+  }
+
+  unqueueButt = () => {
+    return (
+      <Button onClick={() => this.removeQueue(this.props.match.params.id, this.state.name)} variant="contained" size="large" color="primary" style={{borderRadius: 15}}>
+        <CartIcon style={{marginRight: 10}}/> Remove from Queue
+      </Button>
+    )
   }
 
   likedButt = () => {
@@ -107,23 +261,31 @@ class FullProduct extends Component {
     )
   }
 
+  carouse = () => {
+    return (
+      this.state.imagesURL.map((item) =>
+        <img src={item} style={Imagestyles} resizeMode="contain" style={{marginRight: 'auto', marginLeft: 'auto', marginTop: 30, display: 'block'}}/>
+      )
+    )
+  }
+
   render () {
     // console.log(this.props.match.params.id);
     // console.log(this.state.name);
     return (
       <div style={{backgroundColor: '#EEEEEE', sizeBackground: '100bh'}}>
         <Grid container direction="row" justify="space-evenly" alignItems="center">
-            <Card style={CardLeft}>
-              <img src={this.state.picURL} width="400" height="450" style={{marginRight: 'auto', marginLeft: 'auto', marginTop: 30, display: 'block'}}/>
-            </Card>
+            <Carousel style={CardLeft}>
+              {this.carouse()}
+            </Carousel>
             <Card style={CardRight}>
               <Grid container direction="row" justify="flex-start" alignItems="center">
                 <CardContent>
-                  <Typography variant="display2" >
-                    {this.state.name}
+                  <Typography variant="h4" >
+                    {this.state.name.replace(/_/g, " ")}
                   </Typography>
                   <br/>
-                  <Typography variant="display1" gutterBottom>
+                  <Typography variant="h4" gutterBottom>
                     {this.state.price} THB
                   </Typography>
                   <Divider style={{width: window.innerWidth/2.5}}/>
@@ -141,9 +303,7 @@ class FullProduct extends Component {
                   <br/>
                   <br/>
                   {this.state.like? this.likedButt() : this.unlikedButt() }
-                  <Button variant="outlined" size="large" color="primary" style={{borderRadius: 15}}>
-                    <CartIcon style={{marginRight: 10}}/> Add to Queue
-                  </Button>
+                  {this.state.queue? this.unqueueButt() : this.queueButt() }
                 </Grid>
               </CardActions>
             </Card>

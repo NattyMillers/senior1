@@ -1,39 +1,13 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import App from './Pages/App';
+import { BrowserRouter } from 'react-router-dom';
+import registerServiceWorker from './registerServiceWorker';
 
-import Main from './Pages/Main'
-import Profile from './Pages/Profile'
-import AppBar from './Components/NavBar/AppBarr'
-import FullProduct from './Pages/FullProduct'
-import Admin from './Pages/Admin'
-
-class MainApp extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      authenticated: true,
-      loading: true,
-    };
-  }
-
-  render() {
-    return(
-      <div>
-        <Router>
-            <div >
-              <Route component={AppBar}/>
-              <Route exact path="/" component={Main} />
-              <Route exact path="/profile" component={Profile} />
-              <Route exact path="/fullproduct/:id" component={FullProduct} />
-              <Route exact path="/admin" component={Admin}/>
-            </div>
-          </Router>
-      </div>
-    )
-  }
-}
-
-ReactDOM.render(<MainApp />, document.getElementById('root'));
-// registerServiceWorker();
+ReactDOM.render(
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+    ,
+    document.getElementById('root'));
+registerServiceWorker();

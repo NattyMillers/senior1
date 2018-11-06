@@ -13,12 +13,13 @@ class Main extends Component {
   handleClick = (val) => {
     this.props.history.push('/fullproduct/' + val)
   }
+  //                 <SortBy/>
+
 
     render() {
         return (
             <div style={{textAlign: "center", backgroundColor: '#EEEEEE'}}>
               <Paper style={{ padding: 20, boxShadow: 'none', backgroundColor: '#EEEEEE'}}>
-                <SortBy/>
               </Paper>
               <CardItem butto={this.handleClick}/>
             </div>

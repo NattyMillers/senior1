@@ -39,7 +39,7 @@ function getSuggestionsList() {
   let data = []
   db.ref('products/').once('value', snapshot=> {
     snapshot.forEach((doc) => {
-      data.push(doc.key); //change to doc.val().name
+      data.push(doc.key.replace(/_/g, " ")); //change to doc.val().name
     })
   }).then( res => {
     return data
@@ -167,6 +167,18 @@ class SearchBar2 extends Component {
     });
   };
 
+  checkingIn = () => {
+    if (suggestions2.includes(this.state.single)){
+      console.log(this.state.single);
+      this.props.butt(this.state.single.replace(/\s/g, "_"))
+      this.setState({
+        single: ''
+      })
+    }else{
+      alert("Please select from the list recommended...")
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -204,7 +216,7 @@ class SearchBar2 extends Component {
           />
         </div>
         <div>
-          <Button style={{float: 'right', margin: 6}} onClick={()=>this.props.butt(this.state.single)}>
+          <Button style={{float: 'right', margin: 6}} onClick={()=>this.checkingIn()}>
             <SearchIcon />
           </Button>
         </div>

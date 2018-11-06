@@ -41,45 +41,49 @@ class ProfileRight extends Component {
                     Account Details
                   </Grid>
                 </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={6}>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
                     <TextField
                       id="name"
-                      label="Name"
+                      label="First Name"
                       className="classes.textfield"
                       value={this.state.name}
                       margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
                       />
-                  </Grid>
-                  <Grid item xs={6}>
                   <TextField
                     id="lastname"
-                    label="Lastname"
+                    label="Last Name"
                     className="classes.textfield"
                     value={this.state.lastname}
                     margin="normal"
+                    variant="outlined"
+                    style={{width: 280}}
                     />
                   </Grid>
-                </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={6}>
+                  <Grid container direction="row" justify="space-around" alignItems="flex-start" >
                     <TextField
                       id="email"
                       label="Email"
                       className="classes.textfield"
                       value={this.state.email}
                       margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
                       />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={5}>
-                  </Grid>
-                  <Grid item xs={2}>
+                    <TextField
+                      id="confirmemail"
+                      label="Confirm Email"
+                      className="classes.textfield"
+                      margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
+                      />
+                    </Grid>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
                     <Button variant="outlined" style={{marginBottom: 20}}>
                       Submit
                     </Button>
-                  </Grid>
                 </Grid>
 
                 <Divider />
@@ -89,34 +93,83 @@ class ProfileRight extends Component {
                     Update Password
                   </Grid>
                 </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={6}>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
                     <TextField
                       id="oldPass"
                       label="Old Password"
                       className="classes.textfield"
                       value={this.state.oldPass}
                       margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
                       />
-                  </Grid>
-                  <Grid item xs={6}>
                   <TextField
                     id="newPass"
                     label="New Password"
                     className="classes.textfield"
                     value={this.state.newPass}
                     margin="normal"
+                    variant="outlined"
+                    style={{width: 280}}
                     />
-                  </Grid>
                 </Grid>
-                <Grid container spacing={24}>
-                  <Grid item xs={5}>
-                  </Grid>
-                  <Grid item xs={2}>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
                     <Button variant="outlined" style={{marginBottom: 20}}>
                       Update
                     </Button>
+                </Grid>
+
+                <Divider />
+
+                <Grid container spacing={24} style={{marginTop: 20}}>
+                  <Grid item xs={4}>
+                    Shipping Address
                   </Grid>
+                </Grid>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
+                    <TextField
+                      id="address"
+                      label="Address"
+                      className="classes.textfield"
+                      value={this.state.address}
+                      margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
+                      />
+                  <TextField
+                    id="city"
+                    label="City"
+                    className="classes.textfield"
+                    value={this.state.city}
+                    margin="normal"
+                    variant="outlined"
+                    style={{width: 280}}
+                    />
+                </Grid>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
+                    <TextField
+                      id="zip"
+                      label="Zip or Postal Code"
+                      className="classes.textfield"
+                      value={this.state.zip}
+                      margin="normal"
+                      variant="outlined"
+                      style={{width: 280}}
+                      />
+                  <TextField
+                    id="country"
+                    label="Country"
+                    className="classes.textfield"
+                    value={this.state.country}
+                    margin="normal"
+                    variant="outlined"
+                    style={{width: 280}}
+                    />
+                </Grid>
+                <Grid container direction="row" justify="space-around" alignItems="flex-start" >
+                    <Button variant="outlined" style={{marginBottom: 20}}>
+                      Update
+                    </Button>
                 </Grid>
               </Paper>
             </div>
