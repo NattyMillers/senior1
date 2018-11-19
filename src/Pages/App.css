@@ -1,6 +1,4 @@
 body{
-  background: url(https://swimmingthedepths.files.wordpress.com/2015/03/space-mountain-at-night-hd-mountain-scenery-wallpaper-hd-for-android-phones-walldevice-pictures.jpg) no-repeat center center fixed;
-  background-repeat: no-repeat;
   background-size: cover;
   background-position: initial;
   background-color: '#EEEEEE';
@@ -8,4 +6,5 @@ body{
 
 .App{
   background-color: '#EEEEEE';
+  background-size: cover;
 }

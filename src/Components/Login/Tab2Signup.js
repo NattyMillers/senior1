@@ -18,7 +18,6 @@ class Tab2Signup extends Component {
     super(props);
     this.state = {
       name: '',
-      lastname: '',
       email: '',
       password: '',
     }
@@ -31,19 +30,16 @@ class Tab2Signup extends Component {
     const { email, password } = this.state;
     auth.createUserWithEmailAndPassword(email, password)
     .then(authUser => {
-        console.log(authUser);
+      var user = auth.currentUser;
+      user.updateProfile({
+      displayName: this.state.name,
+      }).then(function() {
+      // Update successful.
+      })
     })
     .catch(authError => {
         alert(authError);
     })
-    const uid = auth.currentUser.uid;
-    var postData = {
-      name: this.state.name,
-      lastname: this.state.lastname,
-    }
-    console.log({postData})
-    let ref = db.ref(`users/${uid}/profile/`)
-    ref.set(postData)
   }
 
   handleChange = name => event => {
@@ -54,10 +50,6 @@ class Tab2Signup extends Component {
 
   nameHandler = (event) => {
     this.setState({ name : event.target.value})
-  }
-
-  lastnameHandler = (event) => {
-    this.setState({ lastname : event.target.value})
   }
 
 
@@ -84,15 +76,6 @@ class Tab2Signup extends Component {
                     name="firstname"
                     margin="normal"
                     onChange={this.nameHandler}
-                  />
-                  <br/>
-                  <TextField
-                    fullWidth
-                    id="outlined-password-input"
-                    label="Last Name"
-                    margin="normal"
-                    variant="outlined"
-                    onChange={this.lastnameHandler}
                   />
                   <br/>
                   <TextField

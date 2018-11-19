@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
+import { storage , db, auth } from '../firebase';
 
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -11,6 +12,8 @@ import TagFacesIcon from '@material-ui/icons/TagFaces';
 import PersonIcon from '@material-ui/icons/Person';
 import FavIcon from '@material-ui/icons/Favorite';
 import NotiIcon from '@material-ui/icons/Notifications';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Badge from '@material-ui/core/Badge';
 
 import ProfileRight from '../Components/Profile/ProfileRight';
 import Wishlists from '../Components/Profile/Wishlists';
@@ -28,6 +31,7 @@ class Profile extends Component {
 
   state = {
       selectedIndex: this.props.location.state.page,
+      read: '',
     };
 
     handleListItemClick = (event, index) => {
@@ -36,6 +40,24 @@ class Profile extends Component {
 
     handleClick = (val) => {
       this.props.history.push('/fullproduct/' + val)
+    }
+
+    componentDidMount = () => {
+      this.getRead()
+    }
+
+    getRead = () => {
+      let read = 0
+      const uid = auth.currentUser.uid
+      db.ref('users/' + uid + '/notifications').once('value').then(snapshot => {
+        for (let item in snapshot.val()){
+          if (snapshot.val()[item].read === false){
+            read += 1
+          }
+        }
+      }).then( res => {
+        this.setState({ read: read})
+      })
     }
 
     whichPage = () => {
@@ -56,7 +78,7 @@ class Profile extends Component {
       else if (this.state.selectedIndex === 2){
         return (
           <div>
-            <Notifications/>
+            <Notifications buttin={this.getRead}/>
           </div>
         )
       }
@@ -108,7 +130,11 @@ class Profile extends Component {
                 <ListItemIcon>
                   <NotiIcon />
                 </ListItemIcon>
-                <ListItemText primary="Notifications" />
+                {this.state.read > 0 &&
+                  <Badge color="secondary" badgeContent={this.state.read}>
+                    <ListItemText primary="Notifications" />
+                  </Badge>}
+                { this.state.read === 0 && <ListItemText primary="Notifications" />}
               </ListItem>
               <ListItem
                 button
@@ -118,7 +144,7 @@ class Profile extends Component {
                 <ListItemIcon>
                   <TagFacesIcon />
                 </ListItemIcon>
-                <ListItemText primary="Queue" />
+                <ListItemText primary="Orders" />
               </ListItem>
             </List>
 
@@ -130,6 +156,9 @@ class Profile extends Component {
                 selected={this.state.selectedIndex === 4}
                 onClick={event => this.handleListItemClick(event, 4)}
               >
+                <ListItemIcon>
+                  <LockOpenIcon />
+                </ListItemIcon>
                 <ListItemText primary="Logout" />
               </ListItem>
             </List>

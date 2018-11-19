@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { storage , db, auth } from '../../firebase';
 
-
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -13,6 +12,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+
+import orders from '../../orders.png'
 
 const styles = theme => ({
   textfield: {
@@ -75,11 +76,9 @@ class Queue extends Component {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-                <Grid container spacing={24} style={{marginBottom: 10}}>
-                  <Grid item xs={5}>
-                  </Grid>
+                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#f15722'}}>
                   <Grid item>
-                    QUEUE
+                    <img src={orders} width="100%" style={{margin: 'auto'}}/>
                   </Grid>
                 </Grid>
                 <Divider/>

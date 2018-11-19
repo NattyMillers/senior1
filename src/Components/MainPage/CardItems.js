@@ -76,7 +76,7 @@ class CardItem extends Component {
               <img src={name[3]} resizeMode="contain" style={Imagestyles}/>
               {name[2].replace(/_/g, " ")}
               <br/>
-              {name[1]}
+              {name[1]} Baht
             </CardContent>
           </CardActionArea>
         </Card>

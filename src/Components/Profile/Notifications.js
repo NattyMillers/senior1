@@ -12,6 +12,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
+import noti from '../../noti.png'
 
 const styles = theme => ({
   root: {
@@ -38,10 +39,11 @@ class Notifications extends Component {
 
     getNoti = () => {
       let data = []
+      let read = 0
       const uid = auth.currentUser.uid
       db.ref('users/' + uid + '/notifications').once('value').then(snapshot => {
         for (let item in snapshot.val()){
-          data.push([item, snapshot.val()[item].header, snapshot.val()[item].context]) //[item ID, header, context]
+          data.push([item, snapshot.val()[item].header, snapshot.val()[item].context, snapshot.val()[item].read]) //[item ID, header, context, read status]
         }
       }).then( res => {
         this.setState({ noti: data})
@@ -49,41 +51,65 @@ class Notifications extends Component {
       })
     }
 
-    messages = () => {
-      return (
-        this.state.noti.map((note) =>
-          <ExpansionPanel style={{paddingBottom: 20}}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography >{note[1]}</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Typography>
-                {note[2]}
-              </Typography>
-            </ExpansionPanelDetails>
-            <Button variant="outlined" size="large" color="secondary" style={{borderRadius: 15, marginRight: 15}}> Make a payement</Button>
-            <Button variant="outlined" size="large" color="primary" style={{borderRadius: 15}}> Mark as Read</Button>
-            <br/>
-          </ExpansionPanel>
-        )
-      )
+    addRead = (note) => {
+      const uid = auth.currentUser.uid
+      var updateThis = { read: true}
+      let ref2 = db.ref(`users/${uid}/notifications/${note[0]}/`)
+      ref2.update(updateThis).then( res => {
+        this.props.buttin()
+        this.getNoti()
+      })
+      // this.setState({ read: this.state.read - 1})
     }
 
-
+    messages = (note) => {
+      const isRead = note[3]
+      let notifi;
+      if (!note[3]) {
+        notifi =
+        <ExpansionPanel style={{paddingBottom: 20, backgroundColor: '#EEEEEE'}}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={() => this.addRead(note)} />}>
+            <Typography >{note[1]}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              {note[2]}
+            </Typography>
+          </ExpansionPanelDetails>
+          <br/>
+        </ExpansionPanel>
+      } else {
+        notifi =
+        <ExpansionPanel style={{paddingBottom: 20}}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+            <Typography >{note[1]}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              {note[2]}
+            </Typography>
+          </ExpansionPanelDetails>
+          <br/>
+        </ExpansionPanel>
+      }
+      return (
+        <div>
+          {notifi}
+        </div>
+      );
+    }
 
     render() {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-                <Grid container spacing={24} style={{marginBottom: 10}}>
-                  <Grid item xs={5}>
-                  </Grid>
+                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#1e43ae'}}>
                   <Grid item>
-                    NOTIFICATIONS
+                    <img src={noti} width="100%" style={{margin: 'auto'}}/>
                   </Grid>
                 </Grid>
                 <Divider/>
-                {this.messages()}
+                {this.state.noti.map((note) => this.messages(note))}
               </Paper>
             </div>
         );

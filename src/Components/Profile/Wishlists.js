@@ -12,6 +12,7 @@ import FavIcon from '@material-ui/icons/Favorite';
 
 import Logo from '../../Logo.png'
 import { storage , db, auth } from '../../firebase';
+import wishlists from '../../wishlists.png'
 
 const styles = theme => ({
   textfield: {
@@ -107,13 +108,11 @@ class Wishlists extends Component {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-                <Grid container spacing={24} style={{marginBottom: 10}}>
-                  <Grid item xs={5}>
-                  </Grid>
-                  <Grid item>
-                    WISHLISTS
-                  </Grid>
+              <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#ffe900'}}>
+                <Grid item>
+                  <img src={wishlists} width="100%" style={{margin: 'auto'}}/>
                 </Grid>
+              </Grid>
                 <Divider/>
                 <Grid container direction="row" justify="space-evenly" alignItems="stretch">
                   {this.showEachImage()}
