@@ -88,10 +88,10 @@ class Wishlists extends Component {
     // console.log(this.state.imagesURL);
     return (
         this.state.imagesURL.map((name) =>
-          <Card style={{margin: 10}}>
-            <CardActionArea onClick={()=>this.props.butto(name[0])}>
+          <Card style={{margin: 10, width: '35%'}}>
+            <CardActionArea style={{margin: 'auto', width: '100%'}} onClick={()=>this.props.butto(name[0])}>
               <CardContent>
-                <img src={name[2]} width="200" height="220" style={{margin: 5}}/>
+                <img src={name[2]} width="200" height="220" style={{margin: 'auto'}}/>
                 <br/>
                 {name[1].replace(/_/g, " ")}
               </CardContent>
@@ -108,7 +108,7 @@ class Wishlists extends Component {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-              <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#ffe900'}}>
+              <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#60b0f4'}}>
                 <Grid item>
                   <img src={wishlists} width="100%" style={{margin: 'auto'}}/>
                 </Grid>

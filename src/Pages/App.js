@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 // import './index.css';
 import firebase, { auth, db } from '../firebase';
 
-import logo from '../frontlog.png'
+import logo from '../logonew.png'
 
 import Login from '../Components/Login/Login'
 import SearchBar from '../Components/NavBar/SerchBar2'
@@ -15,6 +15,7 @@ import FullProduct from './FullProduct'
 import Admin from './Admin'
 import PayWithOmise from './PayWithOmise'
 import Thankyou from './Thankyou'
+import Delivery from './Delivery'
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PrivateRoute from './PrivateRoute';
@@ -66,7 +67,7 @@ class App extends Component{
         this.setState({ loading: false, authenticated: true });
         let read = 0
         const uid = auth.currentUser.uid
-        if (uid !== "TvRI4dswQTVlZGODw1V8ioafNGg2"){
+        if (uid !== "NO4iXGOyi1PZrrgxpSiGe8I3Udm2"){
           db.ref('users/' + uid + '/notifications').once('value').then(snapshot => {
             for (let item in snapshot.val()){
               if (snapshot.val()[item].read === false){
@@ -120,6 +121,10 @@ class App extends Component{
     this.props.history.push('/admin')
   }
 
+  toDelivery = event => {
+    this.props.history.push('/delivery')
+  }
+
   toMain = (e) => {
     // e.preventDefault();
     console.log(this.props);
@@ -141,7 +146,7 @@ class App extends Component{
     if (user) {
       console.log(this.state.authenticated);
       this.setState({ authenticated: true });
-      if (uid === 'TvRI4dswQTVlZGODw1V8ioafNGg2'){
+      if (uid === 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2'){
         this.setState({ isAdmin: true });
       }
     } else {
@@ -192,6 +197,12 @@ class App extends Component{
     if (tab === 'Orders'){
       this.toQueue()
     }
+    if (tab === 'Add new product'){
+      this.toAdmin()
+    }
+    if (tab === 'Notify Delivery'){
+      this.toDelivery()
+    }
   }
 
   loginLeaw = () => {
@@ -203,19 +214,23 @@ class App extends Component{
 
     })
 
-    // if (uid === 'TvRI4dswQTVlZGODw1V8ioafNGg2'){
+    // if (uid === 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2'){
     //   this.setState({ isAdmin: true });
     // }
 
     // onClick={this.handleToggle}>
 
+    const logoListAd = [ <AddIcon/>, <FavIcon/>]
+
     const adminList = (
       <div style={{width: 250}}>
         <List>
-          <ListItem button key="Add new product" onClick={() => this.toAdmin()}>
-            <AddIcon />
-            <ListItemText primary="Add new product" />
-          </ListItem>
+          {['Add new product', 'Notify Delivery'].map((text, index) => (
+            <ListItem button key={text} onClick={() => this.whichTab(text)}>
+              {logoListAd[index]}
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
         </List>
         <Divider />
         <List>
@@ -259,11 +274,11 @@ class App extends Component{
                                 onClick={this.toggleDrawer('right', true)}>
             {this.state.read > 0 &&
               <Badge color="secondary" badgeContent={"!"}>
-                <MenuIcon style={{color: '#f15722'}} />
+                <MenuIcon style={{color: '#00185a'}} />
               </Badge>}
             {this.state.read === 0 &&
-            <MenuIcon style={{color: '#f15722'}} />}
-            {auth.currentUser.uid === 'TvRI4dswQTVlZGODw1V8ioafNGg2' && <MenuIcon style={{color: '#f15722'}} />}
+            <MenuIcon style={{color: '#00185a'}} />}
+            {auth.currentUser.uid === 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2' && <MenuIcon style={{color: '#00185a'}} />}
           </Button>
 
           <Drawer anchor="right" open={this.state.right} onClose={this.toggleDrawer('right', false)}>
@@ -273,7 +288,7 @@ class App extends Component{
               onClick={this.toggleDrawer('right', false)}
               onKeyDown={this.toggleDrawer('right', false)}
             >
-              {auth.currentUser.uid === 'TvRI4dswQTVlZGODw1V8ioafNGg2'? adminList : custList}
+              {auth.currentUser.uid === 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2'? adminList : custList}
             </div>
           </Drawer>
       </Grid>
@@ -284,7 +299,7 @@ class App extends Component{
   notLogin = () => {
     return (
       <div>
-        <Button color="inherit" onClick={this.handleClickOpen('body')} style={{color: '#1e43ae'}}>
+        <Button color="inherit" onClick={this.handleClickOpen('body')} style={{color: '#00185a'}}>
           Log in / Sign up
         </Button>
           <Dialog
@@ -307,18 +322,19 @@ class App extends Component{
                 <CircularProgress size={80} thickness={5} />
             </div>
         ) : (
-            <div>
+            <div style={{paddingTop: 75}}>
                 <Route exact path="/" component={Main} />
                 <PrivateRoute exact path="/profile" component={Profile} authenticated={this.state.authenticated}/>
                 <Route exact path="/fullproduct/:id" component={FullProduct} />
                 <PrivateRoute exact path="/admin" component={Admin} authenticated={this.state.authenticated}/>
                 <PrivateRoute exact path="/paywithomise" component={PayWithOmise} authenticated={this.state.authenticated}/>
+                <PrivateRoute exact path="/delivery" component={Delivery} authenticated={this.state.authenticated}/>
                 <Route exact path="/thankyou" component={Thankyou} />
             </div>
         );
     return(
       <div>
-        <AppBar position="static" style={{backgroundColor:"#ffe900", overflow: 'visible', height: 85}} >
+        <AppBar position="fixed" style={{backgroundColor:"white", overflow: 'visible', height: 85}} >
           <Toolbar >
             <Grid container direction="row" justify="space-between" alignItems="center">
                 <Typography variant="title" color="inherit">

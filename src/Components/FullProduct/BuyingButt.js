@@ -50,7 +50,6 @@ class FullProduct extends Component {
 
   componentWillMount() {
     auth.onAuthStateChanged((user) => {
-      console.log(user);
       if (user) {
         this.setState({ authenticated: true });
       } else {
@@ -60,7 +59,6 @@ class FullProduct extends Component {
   }
 
   componentDidMount() {
-    console.log(" in FullProduct");
     this.checkEqual()
   }
 
@@ -84,7 +82,6 @@ class FullProduct extends Component {
         takenCheck: snapshot.child('taken').val(),
       })
     }).then( (res) => {
-      console.log("2");
       if (this.state.capCheck == this.state.takenCheck){
         this.setState({ soldout: true})
       }
@@ -94,8 +91,8 @@ class FullProduct extends Component {
 
   soldoutButt = () => {
     return (
-      <Button size="large" color="primary" style={{borderRadius: 15}}>
-        <CartIcon style={{marginRight: 10}}/> Sold Out
+      <Button variant="outlined" size="large" color="primary" style={{borderRadius: 15}} disabled>
+        <CartIcon style={{marginRight: 10}}/> Buy this product
       </Button>
     )
   }
@@ -117,8 +114,8 @@ class FullProduct extends Component {
   render () {
     return (
       <div >
-        {auth.currentUser.uid !== 'TvRI4dswQTVlZGODw1V8ioafNGg2' && this.queueButt()}
-        {auth.currentUser.uid !== 'TvRI4dswQTVlZGODw1V8ioafNGg2' && this.state.soldout && this.soldoutButt()}
+        {auth.currentUser.uid !== 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2' && !this.state.soldout && this.queueButt()}
+        {auth.currentUser.uid !== 'NO4iXGOyi1PZrrgxpSiGe8I3Udm2' && this.state.soldout && this.soldoutButt()}
       </div>
     )
   }

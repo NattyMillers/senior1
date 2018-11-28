@@ -2,9 +2,12 @@ body{
   background-size: cover;
   background-position: initial;
   background-color: '#EEEEEE';
+  margin-top: 100px;
 }
 
 .App{
   background-color: '#EEEEEE';
   background-size: cover;
+  display: none;
+  margin-top: '100px';
 }

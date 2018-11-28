@@ -97,7 +97,7 @@ class FullProduct extends Component {
   render () {
     return (
       <div >
-          {this.state.like? this.likedButt() : this.unlikedButt() }
+          {this.state.like? this.likedButt() : this.unlikedButt()}
       </div>
     )
   }

@@ -59,24 +59,13 @@ class Queue extends Component {
       })
     }
 
-    removeQueue = (product) => {
-      const uid = auth.currentUser.uid
-      db.ref('users/' + uid + '/queue/').child(product[0]).remove();
-      var updateThis = { taken: product[3] - 1}
-      let ref2 = db.ref(`products/${product[0]}`)
-      ref2.update(updateThis)
-      this.setState({
-        nameItems: [],
-        nameCaps: [],
-      })
-      this.getName()
-    }
+
 
     render() {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#f15722'}}>
+                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#60b0f4'}}>
                   <Grid item>
                     <img src={orders} width="100%" style={{margin: 'auto'}}/>
                   </Grid>
@@ -85,13 +74,8 @@ class Queue extends Component {
                 <List>
                 {this.state.nameCaps.map((note) =>
                   <ListItem>
-                    <ListItemText primary={note[1].replace(/_/g, " ")}/>
-                    <ListItemText primary={note[3] +'/' +note[2]}/>
-                    <ListItemSecondaryAction>
-                      <IconButton aria-label="Delete" onClick={() => this.removeQueue(note)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
+                    <ListItemText style={{float: 'left'}} primary={note[1].replace(/_/g, " ")}/>
+                    <ListItemText style={{float: 'right'}} primary={note[3] +'/' +note[2]}/>
                   </ListItem>
                 )}
                 </List>

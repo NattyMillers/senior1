@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 
-import logo from '../../signuplog.png'
+import logo from '../../signuplogo.png'
 
 class Tab2Signup extends Component {
 
@@ -31,11 +31,13 @@ class Tab2Signup extends Component {
     auth.createUserWithEmailAndPassword(email, password)
     .then(authUser => {
       var user = auth.currentUser;
-      user.updateProfile({
-      displayName: this.state.name,
-      }).then(function() {
-      // Update successful.
-      })
+      if (this.state.name  !== ''){
+        user.updateProfile({
+        displayName: this.state.name,
+        }).then(function() {
+        // Update successful.
+        })
+      }  
     })
     .catch(authError => {
         alert(authError);
@@ -63,7 +65,7 @@ class Tab2Signup extends Component {
                 <img src={logo} onClick={(e) => this.toMain(e)} width="250" />
                 <br/>
                 <br/>
-                <Typography variant="subheading" style={{color: '#f15722', }} gutterBottom>
+                <Typography variant="subheading" style={{color: '#60b0f4', }} gutterBottom>
                 Sign up for an account
                 </Typography>
               </DialogTitle>
@@ -101,7 +103,7 @@ class Tab2Signup extends Component {
                   <br/>
                   <Button type="submit" style={{ color: 'white',
                                     fontSize: 18,
-                                    backgroundColor:'#f15722',
+                                    backgroundColor:'#60b0f4',
                                     width: 300,
                                     height: 60,
                                     marginLeft: 10}}>

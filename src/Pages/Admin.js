@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Moment from 'moment';
+import AdminAdd from '../adminadd.png'
 
 import { storage , db } from '../firebase';
 
@@ -169,7 +170,7 @@ class Admin extends Component {
             <div style={{textAlign: "center", backgroundColor: "#EEEEEE"}}>
               <Grid container direction="column" justify="center" alignItems="center">
                 <Paper style={{width: '50%', marginTop: '2%', padding: '5%', marginBottom: 50}}>
-                <h1 style={{color: '#1c4587'}}> Add New Products</h1>
+                <img src={AdminAdd} resizeMode="contain" width="100%" style={{margin: 'auto'}}/>
                 <Grid container direction="row" justify="space-evenly" alignItems="center" >
                   <TextField onChange={this.nameHandler} label="Product Name" margin="normal" variant="outlined" required/>
                   <TextField onChange={this.priceHandler} label="Price" type="number" margin="normal" variant="outlined" required/>
@@ -208,7 +209,7 @@ class Admin extends Component {
                   <Button onClick={() => this.fileUploadHandler()}
                   style={{color: 'white',
                           fontSize: 18,
-                          backgroundColor:'#1e43ae',
+                          backgroundColor:'#00185a',
                           paddingTop: 10,
                           paddingBottom: 10,
                           paddingLeft: '40%',

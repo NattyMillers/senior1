@@ -4,8 +4,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import CardActionArea from '@material-ui/core/CardActionArea';
 
-import { storage , db } from '../../firebase';
-
 const Cardstyles = {
     width: window.innerWidth/5,
     height: 350,
@@ -24,47 +22,13 @@ class CardItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imagesName: [],
-      imagesURL: [],
-      namePrice: []
+      imagesURL: this.props.dataa,
     }
-    // this.attemptLogin = this.attemptLogin.bind(this);
-    // this.attemptSignUp = this.attemptSignUp.bind(this);
-    // this.imagesURL = this.imagesURL.bind(this);
-
   }
 
-  componentDidMount() {
-    this.getName()
-  }
-
-  getName = () => {
-    console.log("start getName");
-    let data = []
-    db.ref('products/').once('value', snapshot=> {
-      snapshot.forEach((doc) => {
-        data.push([doc.key, doc.val().price, doc.val().name]); //the second one should be the price doc.child('price')
-
-      })
-    }).then( res => {
-      this.setState({
-        namePrice: data
-      })
-      this.getImage()
-      console.log("done getName");
-    })
-  }
-
-  getImage = () => {
-    console.log("start getImage");
-    this.state.namePrice.forEach((name) => {
-      var im = storage.ref().child('mainpage').child(name[0] + '.jpg')
-      im.getDownloadURL().then((url) => {
-        var newArray = this.state.imagesURL.slice();
-        newArray.push([name[0], name[1], name[2], url]);
-        this.setState({ imagesURL: newArray})
-      })
-    })
+  componentDidMount = () => {
+    console.log("CardItem");
+    // console.log(this.state.imagesURL);
   }
 
   showEachImage = () => {
@@ -76,7 +40,7 @@ class CardItem extends Component {
               <img src={name[3]} resizeMode="contain" style={Imagestyles}/>
               {name[2].replace(/_/g, " ")}
               <br/>
-              {name[1]} Baht
+              {name[1].replace(/\B(?=(\d{3})+(?!\d))/g, ",")} Baht
             </CardContent>
           </CardActionArea>
         </Card>

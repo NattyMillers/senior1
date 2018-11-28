@@ -96,7 +96,7 @@ class ProfileRight extends Component {
         return (
             <div style={{textAlign: "center"}}>
               <Paper style={{margin: 20, padding: 20}}>
-                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#ffe900'}}>
+                <Grid container direction="row" justify="center" alignItems="center" style={{backgroundColor: '#00185a'}}>
                   <Grid item>
                     <img src={profile} width="100%" style={{margin: 'auto'}}/>
                   </Grid>

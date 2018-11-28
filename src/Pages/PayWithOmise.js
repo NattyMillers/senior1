@@ -8,6 +8,8 @@ import axios from "./AxiosConfigurations";
 import Grid from '@material-ui/core/Grid';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+
 
 import payment from '../payment.png';
 import { auth, storage , db } from '../firebase';
@@ -27,6 +29,10 @@ class PayWithOmise extends Component {
       imagesURL: '',
       cap: '',
       taken: '',
+      address: '',
+      city: '',
+      zip: '',
+      country: '',
     };
   }
 
@@ -52,17 +58,18 @@ class PayWithOmise extends Component {
     im.getDownloadURL().then((url) => {
       this.setState({ imagesURL: url})
     })
-  }
 
-  // axy = () => {
-  //   axios.get("http://localhost:5000/massdrop-shopping/us-central1/hellofirebase")
-  //   .then((response) => {
-  //       console.log(response)
-  //   })
-  //   .catch((error) => {
-  //       console.log(error)
-  //   })
-  // }
+    const uid = auth.currentUser.uid
+    db.ref('users/' + uid + '/profile/').once('value', snapshot => {
+      this.setState({
+        address: snapshot.child('address').val(),
+        city: snapshot.child('city').val(),
+        zip: snapshot.child('zip').val(),
+        country: snapshot.child('country').val(),
+      })
+    })
+
+  }
 
   // axy = () => {
   //   var payload = {name : "natty"}
@@ -79,7 +86,7 @@ class PayWithOmise extends Component {
 
   onSubmit = (token) => {
     console.log(token)
-    var payload = { token: token }
+    var payload = { token: token, amount: this.state.amount + '00' }
     axios.post("http://localhost:5000/massdrop-shopping/us-central1/pay", payload)
     .then((response) => {
         console.log("Check validate")
@@ -121,7 +128,8 @@ class PayWithOmise extends Component {
       ref3.update(postData3)
       this.setState({ queue: true})
       var notDet = { header: "Payment Confirmation...",
-                      context: "We have received your payment and will let you know right away when the product is ready to be ship!",
+                      context: "We have received your payment and will let you know right away when " + this.state.name.replace(/_/g, " ") + " is ready to be ship!",
+                      id: this.state.product,
                       read: false}
       let notRef = db.ref(`users/${uid}/notifications/${this.state.product}`)
       notRef.update(notDet)
@@ -154,15 +162,28 @@ class PayWithOmise extends Component {
     }).then((res) => {
       this.state.usersId.forEach((usr) => {
         var sendNot = { header: "Your item is ready.",
-                        context: "We're happy to tell you that your order are ready to ship! Thank you for shopping with us! :)",
+                        context: "We're happy to tell you that " + this.state.name.replace(/_/g, " ") + " are ready to ship! " + this.state.name.replace(/_/g, " ") + " is expected to be by your door in 3 days. Thank you for shopping with us! :)",
+                        id: this.state.product,
                         read: false}
         let refNot = db.ref(`users/${usr}/notifications/${this.state.product}2`)
         refNot.update(sendNot)
       })
-      console.log(this.state.usersId);
-      this.props.history.push('/')
+      this.props.history.push('/thankyou')
     })
   }
+
+  confirmAddress = () => {
+    const uid = auth.currentUser.uid
+    var postData2 = { address: this.state.address, city: this.state.city, zip: this.state.zip, country: this.state.country}
+    let ref2 = db.ref(`users/${uid}/profile/`)
+    ref2.update(postData2)
+  }
+
+  handleChange = name => event => {
+      this.setState({
+          [name]: event.target.value,
+      });
+  };
 
   render () {
     return (
@@ -173,10 +194,60 @@ class PayWithOmise extends Component {
           <img src={this.state.imagesURL} resizeMode="contain" width="30%" style={{float: 'left', margin: '2%'}}/>
           <Typography component="h2" variant="title" style={{paddingTop: '7%'}} gutterBottom>Product: {this.state.name.replace(/_/g, " ")}</Typography>
         </Card>
-        <Typography component="h2" variant="title" gutterBottom> Total Payment: {this.state.amount} Baht</Typography>
+        <Typography component="h2" variant="title" gutterBottom> Total Payment: {this.state.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} Baht</Typography>
+        <TextField
+          id="address"
+          label="Address"
+          className="classes.textfield"
+          value={this.state.address}
+          onChange={this.handleChange('address')}
+          margin="normal"
+          variant="outlined"
+          style={{width: 280}}
+          type="text"
+          required
+          />
+        <TextField
+          id="city"
+          label="City"
+          className="classes.textfield"
+          value={this.state.city}
+          onChange={this.handleChange('city')}
+          margin="normal"
+          variant="outlined"
+          style={{width: 280}}
+          type="text"
+          required
+          />
+        <TextField
+          id="zip"
+          label="Zip or Postal Code"
+          className="classes.textfield"
+          value={this.state.zip}
+          onChange={this.handleChange('zip')}
+          margin="normal"
+          variant="outlined"
+          style={{width: 280}}
+          type="text"
+          required
+          />
+        <TextField
+          id="country"
+          label="Country"
+          className="classes.textfield"
+          value={this.state.country}
+          onChange={this.handleChange('country')}
+          margin="normal"
+          variant="outlined"
+          style={{width: 280}}
+          type="text"
+          required
+          />
+          <br/>
+          <br/>
         <Grid container direction="column" justify="space-evenly" alignItems="center">
           <List>
-            <Button variant="outlined" color="primary" onClick={() => this.props.history.push('/')} style={{borderRadius: 15, height: '100%', width: '100%'}}> Cancel</Button>
+            <Button variant="outlined" color="primary" onClick={() => this.confirmAddress()} style={{borderRadius: 15, height: '100%', width: '100%'}}> Confirm Address</Button>
             <br/>
             <br/>
             <Button variant="outlined" color="secondary" style={{borderRadius: 15}}>
@@ -186,12 +257,15 @@ class PayWithOmise extends Component {
                 name="checkoutForm"
                 method="POST">
                 <ListItem
-                  primaryText="Pay The Course"
+                  primaryText="Pay The Item"
                   type="submit"
-                  value="Pay The Course."
+                  value="Pay The Item."
                   id="checkout-button" />
               </form>
             </Button>
+            <br/>
+            <br/>
+            <Button variant="outlined" color="primary" onClick={() => this.props.history.push('/')} style={{borderRadius: 15, height: '100%', width: '100%'}}> Cancel</Button>
           </List>
         </Grid>
         </Card>

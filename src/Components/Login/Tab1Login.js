@@ -10,7 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import {GoogleLoginButton} from 'react-social-login-buttons';
 import Grid from '@material-ui/core/Grid';
 
-import logo from '../../loginlog.png'
+import logo from '../../loginlogo.png'
 import firebase, { auth, db } from '../../firebase';
 
 class Tab1Login extends Component {
@@ -79,7 +79,7 @@ class Tab1Login extends Component {
                 <img src={logo} onClick={(e) => this.toMain(e)} width="250" />
                 <br/>
                 <br/>
-                <Typography variant="subheading" style={{color: '#1e43ae'}} gutterBottom>
+                <Typography variant="subheading" style={{color: '#00185a'}} gutterBottom>
                 Sign in your account
                 </Typography>
               </DialogTitle>
@@ -108,7 +108,7 @@ class Tab1Login extends Component {
                   <br/>
                   <Button type="submit" style={{ color: 'white',
                                     fontSize: 18,
-                                    backgroundColor:'#1e43ae',
+                                    backgroundColor:'#00185a',
                                     width: 300,
                                     height: 60}}>
                     LOGIN
